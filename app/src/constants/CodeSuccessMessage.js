@@ -1,0 +1,18 @@
+export const CodeSuccessMessage = {
+  USER_LOGGED: 'Usuário logado com sucesso',
+  USER_CREATED: 'Usuário criado com sucesso',
+  USER_DISABLED: 'Usuário desativado com sucesso',
+  USER_ENABLED: 'Usuário ativado com sucesso',
+  PASSWORD_CREATED: 'Senha criada com sucesso',
+  PASSWORD_CHANGED: 'Senha alterada com sucesso',
+  REQUEST_EMAIL_BOX_SENT: 'Solicitação realizada, verifique sua caixa de email',
+  FIELD_CREATED: 'Campo criado com sucesso',
+  FIELD_CHANGED: 'Campo alterada com sucesso',
+  FIELD_DISABLED: 'Campo desativado com sucesso',
+  FIELD_ENABLED: 'Campo ativado com sucesso',
+  COMPANY_CREATED: 'Empresa criada com sucesso',
+  COMPANY_CHANGED: 'Empresa alterada com sucesso',
+  COMPANY_DISABLED: 'Empresa desativado com sucesso',
+  COMPANY_ENABLED: 'Empresa ativado com sucesso',
+  TEXT_CHANGED: 'Texto alterado com sucesso',
+};
