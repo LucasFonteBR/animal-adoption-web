@@ -42,8 +42,9 @@ export const DashboardSidebar = ({ open, onClose }) => {
         }}
       >
         <Box sx={{ pr: 2, pl: 1, pb: 0 }}>
-          <Toolbar>
-            <Logo style={{ width: 128 }} />
+          <Toolbar style={{ justifyContent: 'space-between', display: 'flex' }}>
+            <Logo style={{ width: 50 }} />{' '}
+            <p style={{ marginLeft: '20px' }}>Animal Adoption</p>
             <Box sx={{ ml: 2 }} />
           </Toolbar>
         </Box>
