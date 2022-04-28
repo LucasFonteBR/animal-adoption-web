@@ -7,7 +7,7 @@ const MainNavbar = (props) => (
     <Toolbar sx={{ height: 64 }}>
       <Logo
         style={{
-          width: 128,
+          width: 50,
         }}
       />
       <Box sx={{ ml: 1 }} />
