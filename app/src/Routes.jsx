@@ -15,6 +15,8 @@ import PeopleAdd from './pages/people/PeopleAdd';
 import PeopleList from './pages/people/PeopleList';
 import VaccineList from './pages/vaccines/VaccineList';
 import VaccineAdd from './pages/vaccines/VaccineAdd';
+import PersonGet from './pages/people/PersonGet';
+import PersonEdit from './pages/people/PersonEdit';
 
 const routes = (currentUser) => {
   return [
@@ -65,6 +67,14 @@ const routes = (currentUser) => {
         {
           path: '/admin/pessoa',
           element: <PeopleList />,
+        },
+        {
+          path: '/admin/pessoa/visualizar/:uuid',
+          element: <PersonGet />,
+        },
+        {
+          path: '/admin/pessoa/editar/:uuid',
+          element: <PersonEdit />,
         },
       ],
     },

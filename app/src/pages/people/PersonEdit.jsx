@@ -13,30 +13,28 @@ import {
 import { Helmet } from 'react-helmet';
 import Paper from '@mui/material/Paper';
 import { ScreenCrudToolbar } from '../../components/toolbar/ScreenCrudToolbar';
+import NumberFormat from 'react-number-format';
 import SaveIcon from '@mui/icons-material/Save';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useDispatch } from 'react-redux';
-import NumberFormat from 'react-number-format';
-import { addPerson } from '../../services/PeopleService';
+import { getPersonId, updatePerson } from '../../services/PeopleService';
 
-const PeopleAdd = () => {
+const PersonEdit = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [perfilList, setPerfilList] = useState([]);
-
+  const { uuid } = useParams();
   const formik = useFormik({
     initialValues: {
-      name: '',
-      cpf: '',
-      rg: '',
-      birth_date: '',
-      street: '',
-      number: '',
-      district: '',
-      city: '',
-      country: '',
+      cnpj: '',
+      razaoSocial: '',
+      nomeFantasia: '',
+      telefone: '',
+      endereco: '',
+      nomeDPO: '',
+      emailDPO: '',
+      resumo: '',
     },
     validationSchema: Yup.object().shape({
       name: Yup.string().required('Nome é obrigatório'),
@@ -53,26 +51,57 @@ const PeopleAdd = () => {
       district: Yup.string().required('Bairro é obrigatório'),
       country: Yup.string().required('País é obrigatório'),
     }),
-    onSubmit: async (values) => {
-      await dispatch(addPerson(values, navigate));
-    },
+    onSubmit: (values) => {},
   });
-  const [isLoadData, setLoadData] = useState(false);
+
+  const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
-    const fetchData = async () => {};
-    if (!isLoadData && perfilList.length <= 0) {
-      setLoadData(true);
+    const fetchData = async () => {
+      const response = await dispatch(getPersonId(uuid));
+      if (response) {
+        await formik.setFieldValue('name', response.name);
+        await formik.setFieldValue('cpf', response.cpf);
+        await formik.setFieldValue('rg', response.rg);
+        await formik.setFieldValue('street', response.street);
+        await formik.setFieldValue('number', response.number);
+        await formik.setFieldValue('district', response.district);
+        await formik.setFieldValue('city', response.city);
+        await formik.setFieldValue('country', response.country);
+        await formik.setFieldValue('birth_date', response.birth_date);
+        await formik.setFieldValue('active', response.active);
+      }
+    };
+    if (!isLoaded) {
+      setIsLoaded(true);
       fetchData().then();
     }
-  });
+  }, [formik]);
+
+  const submitUpdatePerson = async () => {
+    await formik.submitForm();
+    if (
+      formik.values.name !== '' &&
+      formik.values.cpf !== '' &&
+      formik.values.rg &&
+      formik.values.street !== '' &&
+      formik.values.number !== '' &&
+      formik.values.district !== '' &&
+      formik.values.city !== '' &&
+      formik.values.country !== '' &&
+      formik.values.birth_date !== ''
+    ) {
+      await dispatch(updatePerson(uuid, formik.values, navigate));
+    }
+  };
+
   return (
     <>
       <Helmet>
-        <title>Adicionar Pessoa</title>
+        <title>Editar Pessoa</title>
       </Helmet>
       <Container maxWidth={false}>
         <Paper sx={{ width: '100%' }}>
-          <ScreenCrudToolbar title="Adicionar Pessoa" goBackPath="/admin/pessoa" />
+          <ScreenCrudToolbar title="Editar Pessoa" goBackPath="/admin/pessoa" />
           <Box>
             <form onSubmit={formik.handleSubmit}>
               <Card sx={{ height: '100%' }}>
@@ -134,7 +163,7 @@ const PeopleAdd = () => {
                       </FormControl>
                       <FormControl fullWidth variant="outlined" sx={{ p: 2 }}>
                         <NumberFormat
-                          format="##-##-####"
+                          format="####-##-##"
                           mask="_"
                           error={Boolean(
                             formik.touched.birth_date && formik.errors?.birth_date
@@ -267,12 +296,13 @@ const PeopleAdd = () => {
                     color="primary"
                     size="large"
                     type="submit"
+                    onClick={submitUpdatePerson}
                     variant="contained"
                     startIcon={<SaveIcon fontSize="large" />}
                     sx={{ width: 150 }}
-                    title="Cadastrar"
+                    title="alterar"
                   >
-                    CADASTRAR
+                    ALTERAR
                   </Button>
                 </Box>
               </Card>
@@ -284,4 +314,4 @@ const PeopleAdd = () => {
   );
 };
 
-export default PeopleAdd;
+export default PersonEdit;
