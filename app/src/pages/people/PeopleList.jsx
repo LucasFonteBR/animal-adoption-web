@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Fab, TableCell, Tooltip } from '@mui/material';
+import {
+  Container,
+  InputAdornment,
+  Fab,
+  SvgIcon,
+  FormControl,
+  TextField,
+  TableCell,
+  Tooltip,
+} from '@mui/material';
 import { Helmet } from 'react-helmet';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
@@ -15,15 +24,15 @@ import { Link } from 'react-router-dom';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 
 const columns = [
   { id: 'name', label: 'NOME', minWidth: 200 },
   { id: 'cpf', label: 'DOCUMENTO', minWidth: 200 },
   { id: 'city', label: 'ENDEREÇO', minWidth: 100 },
-  { id: 'status', align: 'center', label: 'ATIVA' },
   {
     id: 'actions',
-    align: 'right',
+    align: 'center',
     minWidth: 130,
     disablePadding: false,
     label: 'AÇÕES',
@@ -59,6 +68,20 @@ const PeopleList = () => {
   const handleSubmit = async (uuid) => {
     await dispatch(deletePerson(uuid));
   };
+
+  const [querySearch, setQuerySearch] = useState({
+    name: null,
+  });
+  const searchUser = async () => {
+    const responseUser = await dispatch(getAllPeople(querySearch));
+    builderData(responseUser);
+  };
+  const checkMyKey = async (event) => {
+    if (event.keyCode === 13 || event.key === 'Enter') {
+      event.preventDefault();
+      await searchUser();
+    }
+  };
   return (
     <>
       <Helmet>
@@ -71,6 +94,27 @@ const PeopleList = () => {
             goAddRegisterPath="/admin/pessoa/adicionar"
           ></ScreenListToolbar>
           <PerfectScrollbar>
+            <FormControl fullWidth sx={{ p: 1 }}>
+              <TextField
+                label="Buscar nome do usuário"
+                fullWidth
+                onKeyDown={(e) => checkMyKey(e)}
+                onChange={(e) =>
+                  setQuerySearch({ ...querySearch, name: e.target.value })
+                }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SvgIcon fontSize="small" color="action">
+                        <SearchIcon />
+                      </SvgIcon>
+                    </InputAdornment>
+                  ),
+                }}
+                placeholder="Buscar nome do usuário"
+                variant="outlined"
+              />
+            </FormControl>
             <TableContainer>
               <Table stickyHeader aria-label="sticky table">
                 <TableHead>
@@ -93,7 +137,7 @@ const PeopleList = () => {
                         {columns.map((column) => {
                           if (column.id === 'actions') {
                             return (
-                              <TableCell key={column.id} align="right">
+                              <TableCell key={column.id} align="center">
                                 <Link to={`/admin/pessoa/visualizar/${row.uuid}`}>
                                   <Tooltip
                                     title="Detalhes"
@@ -124,21 +168,23 @@ const PeopleList = () => {
                                     </Fab>
                                   </Tooltip>
                                 </Link>
-                                <Button onClick={handleSubmit(row.uuid)}>
-                                  <Tooltip
-                                    title="Deletar"
-                                    sx={{
-                                      marginRight: 1,
-                                      marginBottom: 0.3,
-                                      marginTop: 0.3,
-                                      padding: 2,
-                                    }}
+                                <Tooltip
+                                  title="Deletar"
+                                  sx={{
+                                    marginRight: 1,
+                                    marginBottom: 0.3,
+                                    marginTop: 0.3,
+                                    padding: 2,
+                                  }}
+                                >
+                                  <Fab
+                                    color="default"
+                                    size="small"
+                                    onClick={() => handleSubmit(row.uuid)}
                                   >
-                                    <Fab color="default" size="small">
-                                      <DeleteIcon />
-                                    </Fab>
-                                  </Tooltip>
-                                </Button>
+                                    <DeleteIcon />
+                                  </Fab>
+                                </Tooltip>
                               </TableCell>
                             );
                           }

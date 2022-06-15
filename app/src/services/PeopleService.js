@@ -5,11 +5,15 @@ import { CodeAlertsMessage } from '../constants/CodeAlertsMessage';
 import { CodeErrorMessage } from '../constants/CodeErrorMessage';
 import { CodeSuccessMessage } from '../constants/CodeSuccessMessage';
 
-export const getAllPeople = () => {
+export const getAllPeople = (querySearch) => {
   return async (dispatch) => {
     try {
       dispatch(isBusy(true));
-      const { data } = await instanceAxios.get('/people');
+
+      const { data } = await instanceAxios.get(
+        `/people?name=${querySearch ? querySearch.name : ''}`
+      );
+      console.log(data);
       return data;
     } catch (e) {
       dispatch(
